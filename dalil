@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>دليلك</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+background:#000;
+color:#fff;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+padding-bottom:40px
+}
+.header{padding:28px 18px 12px}
+.header h1{font-size:34px;font-weight:900}
+.header p{font-size:13px;color:#777;margin-top:5px}
+
+.swipe{
+display:flex;
+overflow-x:auto;
+gap:12px;
+padding:16px;
+scroll-snap-type:x mandatory
+}
+.swipe::-webkit-scrollbar{display:none}
+
+.square{
+flex:0 0 74vw;
+max-width:280px;
+height:250px;
+border-radius:28px;
+padding:20px;
+border:1px solid #222;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+scroll-snap-align:center
+}
+.s1{background:radial-gradient(120% at 0 0,#1e3a8a,#000 70%)}
+.s2{background:radial-gradient(120% at 0 0,#14532d,#000 70%)}
+.s3{background:radial-gradient(120% at 0 0,#3b0764,#000 70%)}
+.s4{background:radial-gradient(120% at 0 0,#7c2d12,#000 70%)}
+.s5{background:radial-gradient(120% at 0 0,#881337,#000 70%)}
+.s6{background:radial-gradient(120% at 0 0,#134e4a,#000 70%)}
+
+.icon{font-size:42px}
+.square h3{font-size:22px;margin-top:12px}
+.square p{font-size:13px;color:#999;margin-top:6px}
+.badge{
+display:inline-block;
+font-size:11px;
+padding:5px 10px;
+border-radius:20px;
+background:#ffffff15;
+color:#aaa;
+margin-top:10px
+}
+
+.detail{
+display:none;
+margin:12px;
+padding:17px;
+background:#0a0a0a;
+border:1px solid #191919;
+border-radius:24px
+}
+.detail.active{display:block}
+.detail h3{font-size:20px}
+
+.sub{
+font-size:12px;
+color:#888;
+line-height:1.7;
+margin-top:6px
+}
+
+.panel{
+background:#111;
+border:1px solid #1d1d1d;
+border-radius:20px;
+padding:14px;
+margin-top:14px
+}
+
+button{
+font-family:inherit;
+cursor:pointer
+}
+
+.green{
+background:#00e884;
+color:#000;
+border:0;
+padding:14px;
+border-radius:14px;
+font-weight:800
+}
+.dark{
+background:#191919;
+color:#fff;
+border:1px solid #292929;
+padding:14px;
+border-radius:14px
+}
+
+.row{display:flex;gap:8px}
+
+input,select{
+width:100%;
+background:#050505;
+border:1px solid #252525;
+color:#fff;
+padding:13px;
+border-radius:14px;
+outline:none;
+font-size:14px
+}
+
+#reader{
+width:100%;
+overflow:hidden;
+border-radius:18px;
+margin-top:12px
+}
+
+.result{
+padding:18px;
+border-radius:20px;
+margin-top:14px;
+border:2px solid;
+text-align:center
+}
+.yes{background:#07180e;border-color:#00e884;color:#00e884}
+.no{background:#190808;border-color:#ff4747;color:#ff4747}
+.doubt{background:#191407;border-color:#ffca28;color:#ffca28}
+
+.card{
+background:#111;
+border:1px solid #1c1c1c;
+padding:14px;
+border-radius:17px;
+margin-top:8px
+}
+.card h4{font-size:14px}
+
+.actions{display:flex;gap:8px;margin-top:10px}
+.actions a{
+flex:1;
+text-decoration:none;
+text-align:center;
+padding:10px;
+border-radius:12px;
+font-size:12px
+}
+.mapbtn{background:#222;color:#fff}
+.callbtn{background:#fff;color:#000}
+
+.filter{
+display:flex;
+gap:7px;
+overflow:auto;
+padding:12px 0
+}
+.filter::-webkit-scrollbar{display:none}
+.filter button{
+white-space:nowrap;
+background:#111;
+border:1px solid #222;
+color:#777;
+padding:8px 13px;
+border-radius:18px
+}
+.filter button.active{background:#fff;color:#000}
+
+#map{
+height:380px;
+border-radius:20px;
+margin-top:12px
+}
+
+.search{
+margin-top:14px
+}
+
+.history{
+font-size:12px;
+background:#111;
+border:1px solid #1d1d1d;
+padding:11px;
+border-radius:13px;
+margin-top:7px
+}
+
+.loader{
+text-align:center;
+color:#888;
+padding:14px
+}
+
+.notice{
+font-size:11px;
+color:#777;
+line-height:1.6;
+margin-top:10px
+}
+
+.sectionTitle{
+font-size:14px;
+margin-top:18px;
+margin-bottom:8px
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+<h1>دليلك.</h1>
+<p>مساعدك اليومي في ألمانيا 🇩🇪</p>
+</header>
+
+<div class="swipe">
+
+<div class="square s6" onclick="openTab('halal')" style="border-color:#00e884">
+<div>
+<div class="icon">🕌</div>
+<h3>سكانر حلال</h3>
+<p>افحص باركود المنتج</p>
+<span class="badge" style="background:#00e884;color:#000">فحص مباشر</span>
+</div>
+</div>
+
+<div class="square s1" onclick="openTab('gov')">
+<div>
+<div class="icon">🏛️</div>
+<h3>الدوائر الحكومية</h3>
+<p>معلومات ومواقع الدوائر</p>
+<span class="badge">ألمانيا</span>
+</div>
+</div>
+
+<div class="square s2" onclick="openTab('jobs')">
+<div>
+<div class="icon">💼</div>
+<h3>وظائف</h3>
+<p>فرص عمل ومعلومات التقديم</p>
+<span class="badge">وظائف</span>
+</div>
+</div>
+
+<div class="square s3" onclick="openTab('map')">
+<div>
+<div class="icon">🗺️</div>
+<h3>الخريطة</h3>
+<p>شاهد المواقع القريبة</p>
+<span class="badge">تفاعلية</span>
+</div>
+</div>
+
+<div class="square s4" onclick="openTab('letters')">
+<div>
+<div class="icon">📄</div>
+<h3>ماسح الرسائل</h3>
+<p>مساعد لفهم الرسائل الألمانية</p>
+<span class="badge">قريباً</span>
+</div>
+</div>
+
+<div class="square s5" onclick="openTab('lawyers')">
+<div>
+<div class="icon">⚖️</div>
+<h3>محامون عرب</h3>
+<p>دليل المحامين</p>
+<span class="badge">دليل</span>
+</div>
+</div>
+
+</div>
+
+<section id="d-halal" class="detail active">
+<h3>🕌 سكانر الحلال</h3>
+<p class="sub">
+امسح باركود المنتج. إذا لم يكن المنتج محفوظاً محلياً، سيحاول التطبيق البحث عنه في Open Food Facts وتحليل المكونات بشكل أولي.
+</p>
+
+<div class="panel">
+
+<div class="row">
+<button id="startBtn" class="green" style="flex:1" onclick="startScanner()">
+📷 تشغيل الكاميرا
+</button>
+
+<button class="dark" onclick="stopScanner()">
+⏹ إيقاف
+</button>
+</div>
+
+<div id="reader" style="display:none"></div>
+
+<div class="row" style="margin-top:10px">
+<input id="manualCode" inputmode="numeric" placeholder="أدخل رقم الباركود">
+<button class="dark" onclick="manualCheck()">فحص</button>
+</div>
+
+</div>
+
+<div id="productResult"></div>
+
+<h4 class="sectionTitle">🔎 بحث</h4>
+<input id="searchInput" placeholder="ابحث عن منتج أو دائرة أو وظيفة..." oninput="globalSearch()">
+<div id="searchResults"></div>
+
+<h4 class="sectionTitle">🕘 آخر الفحوصات</h4>
+<div id="history"></div>
+
+<p class="notice">
+⚠️ نتائج تحليل الحلال إرشادية وليست فتوى شرعية. تركيبة المنتجات قد تتغير، لذلك تحقق من العبوة وشهادة الحلال عند الحاجة.
+</p>
+</section>
+
+<section id="d-gov" class="detail">
+<h3>🏛️ الدوائر الحكومية</h3>
+
+<div class="filter">
+<button class="active" onclick="filterGov('all',this)">الكل</button>
+<button onclick="filterGov('Bayern',this)">Bayern</button>
+<button onclick="filterGov('Berlin',this)">Berlin</button>
+<button onclick="filterGov('NRW',this)">NRW</button>
+<button onclick="filterGov('Hessen',this)">Hessen</button>
+<button onclick="filterGov('Hamburg',this)">Hamburg</button>
+</div>
+
+<div id="govList"></div>
+</section>
+
+<section id="d-jobs" class="detail">
+<h3>💼 الوظائف</h3>
+<p class="sub">هذه البيانات تجريبية حالياً وسيتم لاحقاً ربطها بمصادر وظائف حقيقية.</p>
+<div id="jobsList"></div>
+</section>
+
+<section id="d-map" class="detail">
+<h3>🗺️ الخريطة</h3>
+<div id="map"></div>
+</section>
+
+<section id="d-letters" class="detail">
+<h3>📄 ماسح الرسائل الألمانية</h3>
+
+<div class="panel" style="text-align:center;padding:30px">
+<div style="font-size:45px">📸</div>
+<h3 style="margin-top:10px">صوّر الرسالة</h3>
+<p class="sub">
+ميزة تحليل وترجمة الرسائل بالذكاء الاصطناعي سيتم ربطها لاحقاً.
+</p>
+</div>
+</section>
+
+<section id="d-lawyers" class="detail">
+<h3>⚖️ محامون عرب</h3>
+<p class="sub">سيتم إضافة دليل موثق للمحامين مع التخصص والمدينة وبيانات التواصل.</p>
+</section>
+
+<script>
+
+const govData=[
+{
+name:"Ausländerbehörde München",
+land:"Bayern",
+addr:"Ruppertstraße 19, München",
+phone:"08923396010",
+lat:48.129,
+lon:11.558
+},
+{
+name:"Bürgerbüro München",
+land:"Bayern",
+addr:"Ruppertstraße 11, München",
+phone:"08923300",
+lat:48.13,
+lon:11.559
+},
+{
+name:"LEA Berlin",
+land:"Berlin",
+addr:"Friedrich-Krause-Ufer 24, Berlin",
+phone:"030902694000",
+lat:52.54,
+lon:13.35
+},
+{
+name:"Ausländeramt Köln",
+land:"NRW",
+addr:"Köln",
+phone:"02212210",
+lat:50.93,
+lon:6.97
+},
+{
+name:"Ausländerbehörde Frankfurt",
+land:"Hessen",
+addr:"Frankfurt am Main",
+phone:"0692120",
+lat:50.10,
+lon:8.64
+},
+{
+name:"Ausländerbehörde Hamburg",
+land:"Hamburg",
+addr:"Hamburg",
+phone:"040428390",
+lat:53.57,
+lon:10.07
+}
+];
+
+const jobsData=[
+{name:"وظيفة تجريبية — Lager",city:"München",land:"Bayern"},
+{name:"وظيفة تجريبية — Logistik",city:"Berlin",land:"Berlin"},
+{name:"وظيفة تجريبية — Lager",city:"Köln",land:"NRW"}
+];
+
+const halalDB={
+"8001505005596":{
+name:"Nutella",
+status:"doubt",
+reason:"المنتج موجود في قاعدة البيانات المحلية، لكن حالة الحلال تحتاج تحقق من المصدر والعبوة الحالية.",
+ingredients:"Zucker, Palmöl, Haselnüsse, Milchpulver, Kakao"
+},
+"4008412025006":{
+name:"Alnatura Hafer Drink",
+status:"yes",
+reason:"المكونات المسجلة نباتية ولا يظهر فيها مكوّن محرم واضح.",
+ingredients:"Hafer, Wasser, Sonnenblumenöl, Salz"
+}
+};
+
+let qr=null;
+let map=null;
+
+function openTab(id){
+document.querySelectorAll(".detail").forEach(x=>x.classList.remove("active"));
+const el=document.getElementById("d-"+id);
+if(el)el.classList.add("active");
+
+if(id==="map"){
+setTimeout(()=>{
+initMap();
+if(map)map.invalidateSize();
+},200);
+}
+
+window.scrollTo({top:250,behavior:"smooth"});
+}
+
+function renderGov(list){
+document.getElementById("govList").innerHTML=list.map(x=>`
+<div class="card">
+<h4>📍 ${x.name}</h4>
+<div class="sub">${x.addr}<br>📞 ${x.phone}</div>
+<div class="actions">
+<a class="mapbtn" target="_blank"
+href="https://www.google.com/maps/search/?api=1&query=${x.lat},${x.lon}">
+🗺 الاتجاهات
+</a>
+<a class="callbtn" href="tel:${x.phone}">📞 اتصال</a>
+</div>
+</div>
+`).join("");
+}
+
+function filterGov(land,btn){
+document.querySelectorAll(".filter button").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+
+renderGov(
+land==="all"
+?govData
+:govData.filter(x=>x.land===land)
+);
+}
+
+function renderJobs(){
+document.getElementById("jobsList").innerHTML=jobsData.map(x=>`
+<div class="card">
+<h4>💼 ${x.name}</h4>
+<div class="sub">${x.city} • ${x.land}</div>
+</div>
+`).join("");
+}
+
+function initMap(){
+if(map)return;
+
+map=L.map("map",{zoomControl:true}).setView([51.16,10.45],6);
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:"© OpenStreetMap"
+}
+).addTo(map);
+
+govData.forEach(x=>{
+L.marker([x.lat,x.lon])
+.addTo(map)
+.bindPopup(x.name);
+});
+}
+
+async function startScanner(){
+if(qr)return;
+
+const reader=document.getElementById("reader");
+reader.style.display="block";
+
+qr=new Html5Qrcode("reader");
+
+try{
+await qr.start(
+{facingMode:"environment"},
+{
+fps:10,
+qrbox:{width:250,height:150}
+},
+code=>{
+stopScanner();
+checkProduct(code);
+},
+()=>{}
+);
+
+document.getElementById("startBtn").textContent="✅ الكاميرا تعمل";
+}catch(e){
+qr=null;
+reader.style.display="none";
+alert("تعذر تشغيل الكاميرا. تأكد من السماح للموقع باستخدام الكاميرا أو أدخل الباركود يدوياً.");
+}
+}
+
+async function stopScanner(){
+if(!qr)return;
+
+try{
+await qr.stop();
+}catch(e){}
+
+try{
+qr.clear();
+}catch(e){}
+
+qr=null;
+
+document.getElementById("reader").style.display="none";
+document.getElementById("startBtn").textContent="📷 تشغيل الكاميرا";
+}
+
+function manualCheck(){
+const code=document.getElementById("manualCode").value.trim();
+
+if(!code){
+alert("أدخل رقم الباركود");
+return;
+}
+
+checkProduct(code);
+}
+
+async function checkProduct(code){
+
+const result=document.getElementById("productResult");
+
+if(halalDB[code]){
+showProduct(code,halalDB[code]);
+return;
+}
+
+result.innerHTML=`
+<div class="panel loader">
+🔎 جاري البحث عن المنتج...
+</div>
+`;
+
+try{
+
+const response=await fetch(
+"https://world.openfoodfacts.org/api/v2/product/"+encodeURIComponent(code)+".json"
+);
+
+if(!response.ok)throw new Error();
+
+const data=await response.json();
+
+if(!data.product){
+showUnknown(code);
+return;
+}
+
+const p=data.product;
+
+const name=
+p.product_name_ar ||
+p.product_name ||
+p.product_name_de ||
+("منتج "+code);
+
+const ingredients=
+p.ingredients_text_ar ||
+p.ingredients_text ||
+p.ingredients_text_de ||
+"المكونات غير متوفرة";
+
+const analysis=analyseIngredients(ingredients);
+
+const product={
+name,
+status:analysis.status,
+reason:analysis.reason,
+ingredients,
+image:p.image_front_small_url || ""
+};
+
+showProduct(code,product);
+
+}catch(e){
+
+result.innerHTML=`
+<div class="result doubt">
+<div style="font-size:26px;font-weight:900">⚠️ تعذر البحث</div>
+<div class="sub">
+تأكد من اتصال الإنترنت أو جرّب إدخال الباركود مرة أخرى.
+</div>
+</div>
+`;
+
+}
+}
+
+function analyseIngredients(text){
+
+const s=(text||"").toLowerCase();
+
+const forbidden=[
+"pork",
+"porcine",
+"schwein",
+"schweine",
+"lard",
+"schmalz"
+];
+
+const doubtful=[
+"gelatin",
+"gelatine",
+"gelatina",
+"e441",
+"alcohol",
+"alkohol",
+"ethanol",
+"e120",
+"carmine",
+"karmin"
+];
+
+const foundForbidden=forbidden.filter(x=>s.includes(x));
+const foundDoubtful=doubtful.filter(x=>s.includes(x));
+
+if(foundForbidden.length){
+return{
+status:"no",
+reason:"تم العثور على مكوّن يشير بوضوح إلى الخنزير أو مشتقاته: "+foundForbidden.join(", ")
+};
+}
+
+if(foundDoubtful.length){
+return{
+status:"doubt",
+reason:"تم العثور على مكوّن يحتاج تحقق من مصدره: "+foundDoubtful.join(", ")
+};
+}
+
+if(!text || text==="المكونات غير متوفرة"){
+return{
+status:"doubt",
+reason:"لا تتوفر قائمة مكونات كافية لإعطاء نتيجة."
+};
+}
+
+return{
+status:"doubt",
+reason:"لم يظهر مكوّن محرم واضح في الفحص الآلي، لكن هذا لا يكفي لإثبات أن المنتج حلال."
+};
+}
+
+function showProduct(code,p){
+
+let cls="doubt";
+let label="⚠️ غير مؤكد";
+
+if(p.status==="yes"){
+cls="yes";
+label="✅ يبدو مناسباً";
+}
+
+if(p.status==="no"){
+cls="no";
+label="❌ يحتوي مكوّناً غير مناسب";
+}
+
+document.getElementById("productResult").innerHTML=`
+<div class="result ${cls}">
+
+<div style="font-size:27px;font-weight:900">
+${label}
+</div>
+
+${p.image?`
+<img src="${p.image}"
+style="max-width:120px;max-height:120px;border-radius:15px;margin-top:12px"
+alt="">
+`:""}
+
+<div style="font-size:18px;font-weight:800;margin-top:10px">
+${escapeHtml(p.name)}
+</div>
+
+<div class="sub">
+باركود: ${escapeHtml(code)}
+</div>
+
+<div class="panel" style="text-align:right">
+
+<strong>التحليل</strong>
+<div class="sub">${escapeHtml(p.reason)}</div>
+
+<strong style="display:block;margin-top:10px">المكونات</strong>
+<div class="sub">${escapeHtml(p.ingredients)}</div>
+
+</div>
+
+</div>
+`;
+
+saveHistory(code,p);
+}
+
+function showUnknown(code){
+
+const p={
+name:"منتج غير معروف",
+status:"doubt",
+reason:"لم يتم العثور على المنتج في قاعدة البيانات المستخدمة.",
+ingredients:"غير متوفر"
+};
+
+showProduct(code,p);
+}
+
+function saveHistory(code,p){
+
+let h=[];
+
+try{
+h=JSON.parse(localStorage.getItem("dalilHistory")||"[]");
+}catch(e){}
+
+h=h.filter(x=>x.code!==code);
+
+h.unshift({
+code,
+name:p.name,
+status:p.status,
+date:new Date().toLocaleString("de-DE")
+});
+
+h=h.slice(0,8);
+
+localStorage.setItem("dalilHistory",JSON.stringify(h));
+
+renderHistory();
+}
+
+function renderHistory(){
+
+let h=[];
+
+try{
+h=JSON.parse(localStorage.getItem("dalilHistory")||"[]");
+}catch(e){}
+
+const box=document.getElementById("history");
+
+if(!h.length){
+box.innerHTML=`<div class="notice">لا توجد فحوصات سابقة.</div>`;
+return;
+}
+
+box.innerHTML=h.map(x=>{
+
+let icon="⚠️";
+if(x.status==="yes")icon="✅";
+if(x.status==="no")icon="❌";
+
+return`
+<div class="history">
+<strong>${icon} ${escapeHtml(x.name)}</strong>
+<div class="sub">
+${escapeHtml(x.code)} • ${escapeHtml(x.date)}
+</div>
+</div>
+`;
+
+}).join("");
+}
+
+function globalSearch(){
+
+const q=document.getElementById("searchInput").value.trim().toLowerCase();
+const box=document.getElementById("searchResults");
+
+if(!q){
+box.innerHTML="";
+return;
+}
+
+const results=[];
+
+Object.entries(halalDB).forEach(([code,p])=>{
+if(
+(p.name+" "+p.ingredients+" "+code)
+.toLowerCase()
+.includes(q)
+){
+results.push({
+icon:"🕌",
+name:p.name,
+text:"منتج • "+code
+});
+}
+});
+
+govData.forEach(x=>{
+if(
+(x.name+" "+x.addr+" "+x.land)
+.toLowerCase()
+.includes(q)
+){
+results.push({
+icon:"🏛️",
+name:x.name,
+text:x.addr
+});
+}
+});
+
+jobsData.forEach(x=>{
+if(
+(x.name+" "+x.city+" "+x.land)
+.toLowerCase()
+.includes(q)
+){
+results.push({
+icon:"💼",
+name:x.name,
+text:x.city
+});
+}
+});
+
+box.innerHTML=results.length
+?results.slice(0,10).map(x=>`
+<div class="card">
+<h4>${x.icon} ${escapeHtml(x.name)}</h4>
+<div class="sub">${escapeHtml(x.text)}</div>
+</div>
+`).join("")
+:`<div class="notice">لا توجد نتائج.</div>`;
+}
+
+function escapeHtml(value){
+
+return String(value??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+renderGov(govData);
+renderJobs();
+renderHistory();
+
+</script>
+
+</body>
+</html>
