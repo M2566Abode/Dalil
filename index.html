@@ -505,13 +505,26 @@ async function renderJobs(){
 
     window.jobsData = jobs;
 
-    document.getElementById("jobsList").innerHTML = jobs.map(x => 
-      <div class="card">
-        <h4>💼 ${x.name || ""}</h4>
-        <div class="sub">${x.city || ""} • ${x.land || ""}</div>
-      </div>
-    ).join("");
+  
+      const jobsList = document.getElementById("jobsList");
+jobsList.innerHTML = "";
 
+jobs.forEach(function(x) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const title = document.createElement("h4");
+  title.textContent = "💼 " + (x.name  "");
+
+  const sub = document.createElement("div");
+  sub.className = "sub";
+  sub.textContent = (x.city 
+ "") + " • " + (x.land || "");
+
+  card.appendChild(title);
+  card.appendChild(sub);
+  jobsList.appendChild(card);
+});
     console.log("Jobs loaded from Firebase:", jobs);
   } catch (error) {
     console.error("Firebase jobs load error:", error);
