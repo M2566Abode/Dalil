@@ -936,6 +936,20 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
     console.error(error);
   }
 };
+
+  window.saveDalilData = async function(collectionName, data) {
+  try {
+    const docRef = await addDoc(collection(db, collectionName), {
+      ...data,
+      createdAt: new Date().toISOString()
+    });
+    console.log("Saved:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Firebase save error:", error);
+    throw error;
+  }
+};
 </script>
 </body>
 </html>
