@@ -427,6 +427,10 @@ const jobsData=[
 {name:"وظيفة تجريبية — Lager",city:"Köln",land:"NRW"}
 ];
 
+  window.saveJobToFirebase = async function(job) {
+  return await window.saveDalilData("jobs", job);
+};
+
 const halalDB={
 "8001505005596":{
 name:"Nutella",
