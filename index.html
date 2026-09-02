@@ -998,9 +998,8 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
 
     window.jobsData = jobs;
 
-    document.getElementById("jobsList").innerHTML = jobs.map(x => 
-      
-    console.log("Jobs loaded from Firebase:", jobs);
+   
+ renderJobs();
   } catch (error) {
     console.error("Firebase jobs load error:", error);
   }
