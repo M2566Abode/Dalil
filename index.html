@@ -491,15 +491,32 @@ land==="all"
 );
 }
 
-function renderJobs(){
-document.getElementById("jobsList").innerHTML=jobsData.map(x=>`
-<div class="card">
-<h4>💼 ${x.name}</h4>
-<div class="sub">${x.city} • ${x.land}</div>
-</div>
-`).join("");
-}
+async function renderJobs(){
+  try {
+    const querySnapshot = await getDocs(collection(db, "jobs"));
+    const jobs = [];
 
+    querySnapshot.forEach((doc) => {
+      jobs.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    window.jobsData = jobs;
+
+    document.getElementById("jobsList").innerHTML = jobs.map(x => 
+      <div class="card">
+        <h4>💼 ${x.name || ""}</h4>
+        <div class="sub">${x.city || ""} • ${x.land || ""}</div>
+      </div>
+    ).join("");
+
+    console.log("Jobs loaded from Firebase:", jobs);
+  } catch (error) {
+    console.error("Firebase jobs load error:", error);
+  }
+}
 function initMap(){
 if(map)return;
 
@@ -954,6 +971,35 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
     throw error;
   }
 };
+
+  window.loadJobsFromFirebase = async function () {
+  try {
+    const querySnapshot = await getDocs(collection(db, "jobs"));
+    const jobs = [];
+
+    querySnapshot.forEach((doc) => {
+      jobs.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    window.jobsData = jobs;
+
+    document.getElementById("jobsList").innerHTML = jobs.map(x => 
+      <div class="card">
+        <h4>💼 ${x.name || ""}</h4>
+        <div class="sub">${x.city || ""} • ${x.land || ""}</div>
+      </div>
+    ).join("");
+
+    console.log("Jobs loaded from Firebase:", jobs);
+  } catch (error) {
+    console.error("Firebase jobs load error:", error);
+  }
+};
+
+window.loadJobsFromFirebase();
 </script>
 </body>
 </html>
