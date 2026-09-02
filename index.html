@@ -922,6 +922,20 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  window.testFirestore = async function () {
+  try {
+    const docRef = await addDoc(collection(db, "test"), {
+      message: "Dalil connected successfully",
+      createdAt: new Date().toISOString()
+    });
+
+    alert("✅ قاعدة البيانات متصلة بنجاح!");
+    console.log("Document ID:", docRef.id);
+  } catch (error) {
+    alert("❌ خطأ بالاتصال: " + error.message);
+    console.error(error);
+  }
+};
 </script>
 </body>
 </html>
