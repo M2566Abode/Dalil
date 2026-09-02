@@ -518,8 +518,7 @@ title.textContent = "💼 " + (x.name || "");
 
   const sub = document.createElement("div");
   sub.className = "sub";
-  sub.textContent = (x.city 
- "") + " • " + (x.land || "");
+ sub.textContent = x.city + " - " + x.land;
 
   card.appendChild(title);
   card.appendChild(sub);
