@@ -514,7 +514,7 @@ jobs.forEach(function(x) {
   card.className = "card";
 
   const title = document.createElement("h4");
-  title.textContent = "💼 " + (x.name  "");
+title.textContent = "💼 " + (x.name || "");
 
   const sub = document.createElement("div");
   sub.className = "sub";
@@ -1000,12 +1000,7 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
     window.jobsData = jobs;
 
     document.getElementById("jobsList").innerHTML = jobs.map(x => 
-      <div class="card">
-        <h4>💼 ${x.name || ""}</h4>
-        <div class="sub">${x.city || ""} • ${x.land || ""}</div>
-      </div>
-    ).join("");
-
+      
     console.log("Jobs loaded from Firebase:", jobs);
   } catch (error) {
     console.error("Firebase jobs load error:", error);
