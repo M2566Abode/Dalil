@@ -491,44 +491,30 @@ land==="all"
 );
 }
 
-async function renderJobs(){
-  try {
-    const querySnapshot = await getDocs(collection(db, "jobs"));
-    const jobs = [];
+function renderJobs(){
+  const jobs = window.jobsData || jobsData;
+  const jobsList = document.getElementById("jobsList");
+  jobsList.innerHTML = "";
 
-    querySnapshot.forEach((doc) => {
-      jobs.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
+  jobs.forEach(function(x) {
+    const card = document.createElement("div");
+    card.className = "card";
 
-    window.jobsData = jobs;
+    const title = document.createElement("h4");
+    title.textContent = "💼 " + (x.name || "");
 
-  
-      const jobsList = document.getElementById("jobsList");
-jobsList.innerHTML = "";
+    const sub = document.createElement("div");
+    sub.className = "sub";
+    sub.textContent = (x.city || "") + " - " + (x.land || "");
 
-jobs.forEach(function(x) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  const title = document.createElement("h4");
-title.textContent = "💼 " + (x.name || "");
-
-  const sub = document.createElement("div");
-  sub.className = "sub";
- sub.textContent = x.city + " - " + x.land;
-
-  card.appendChild(title);
-  card.appendChild(sub);
-  jobsList.appendChild(card);
-});
-    console.log("Jobs loaded from Firebase:", jobs);
-  } catch (error) {
-    console.error("Firebase jobs load error:", error);
-  }
+    card.appendChild(title);
+    card.appendChild(sub);
+    jobsList.appendChild(card);
+  });
 }
+
+window.renderJobs = renderJobs;
+
 function initMap(){
 if(map)return;
 
@@ -894,7 +880,7 @@ text:x.addr
 }
 });
 
-jobsData.forEach(x=>{
+(window.jobsData || jobsData).forEach(x=>{
 if(
 (x.name+" "+x.city+" "+x.land)
 .toLowerCase()
@@ -999,7 +985,7 @@ import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.c
     window.jobsData = jobs;
 
    
- renderJobs();
+ window.renderJobs();
   } catch (error) {
     console.error("Firebase jobs load error:", error);
   }
